@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://daf0k1n1k4sok"]
+
+[ext_resource type="Script" uid="uid://c0hqvqlf6x2yc" path="res://assets/controllers/position_controller/position_controller.gd" id="1_1rgxd"]
+
+[node name="PositionController" type="Node"]
+script = ExtResource("1_1rgxd")
+
+[node name="Timer" type="Timer" parent="."]
+unique_name_in_owner = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
