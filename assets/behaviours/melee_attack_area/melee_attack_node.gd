@@ -4,30 +4,31 @@ extends Area2D
 @onready var timer: Timer = $Timer
 
 
-var _objectives: Array[HealthNode] = []
+@export var damage_dealt: int = 1
+@export var knockback_force: float = 1.
+
+
+var _objectives: Array[HitboxArea] = []
 var _can_attack: bool = true
 
-func _on_body_entered(body: Node2D) -> void:
-	var health_node: HealthNode = body.get_node_or_null("HealthNode") as HealthNode
-	if health_node != null:
-		print(body.name + " has entered... ")
-		_objectives.append(health_node)
+
+func _on_area_entered(area: Area2D) -> void:
+	if area is HitboxArea:
+		_objectives.append(area)
 		attack()
 
 
-func _on_body_exited(body: Node2D) -> void:
-	var health_node: HealthNode = body.get_node_or_null("HealthNode") as HealthNode
-	if health_node != null:
-		var index: int = _objectives.find(health_node)
-		if index > 0:
-			print(body.name + " has exited... ")
+func _on_area_exited(area: Area2D) -> void:
+	if area is HitboxArea:
+		var index: int = _objectives.find(area)
+		if index >= 0:
 			_objectives.remove_at(index)
 
 
 func attack():
 	if not _objectives.is_empty() and _can_attack:
 		print("ATTACKING")
-		_objectives[0].on_hit(1)
+		_objectives[0].hit(damage_dealt, knockback_force)
 		timer.start()
 		_can_attack = false
 

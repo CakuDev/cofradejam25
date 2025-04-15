@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://rwgm47b31kuf"]
+[gd_scene load_steps=10 format=3 uid="uid://rwgm47b31kuf"]
 
 [ext_resource type="Texture2D" uid="uid://bgcakcsepfhfr" path="res://assets/tilemap/atlas.tres" id="1_u7nro"]
+[ext_resource type="PackedScene" uid="uid://dkgyv5thgjacn" path="res://assets/behaviours/hitbox_area/hitbox_area.tscn" id="2_58jds"]
 [ext_resource type="PackedScene" uid="uid://bm1nns1w2rpvp" path="res://assets/behaviours/follow_node/follow_node.tscn" id="2_875rm"]
 [ext_resource type="PackedScene" uid="uid://h3s24tuxkulm" path="res://assets/behaviours/health_node/health_node.tscn" id="3_7jq7r"]
+[ext_resource type="PackedScene" uid="uid://6u6rou0c3jfe" path="res://assets/behaviours/melee_attack_area/melee_attack_node.tscn" id="5_3tqy1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_875rm"]
 atlas = ExtResource("1_u7nro")
@@ -10,6 +12,12 @@ region = Rect2(0, 160, 16, 16)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7jq7r"]
 radius = 5.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3tqy1"]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lfjlf"]
+radius = 8.0
 
 [node name="Bat" type="CharacterBody2D"]
 collision_layer = 3
@@ -22,7 +30,26 @@ offset = Vector2(0, -8)
 position = Vector2(0, -8)
 shape = SubResource("CircleShape2D_7jq7r")
 
+[node name="HitboxArea" parent="." instance=ExtResource("2_58jds")]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxArea"]
+position = Vector2(0, -8)
+shape = SubResource("CircleShape2D_3tqy1")
+debug_color = Color(0.7, 0, 0, 0.419608)
+
 [node name="FollowNode" parent="." instance=ExtResource("2_875rm")]
 
 [node name="HealthNode" parent="." instance=ExtResource("3_7jq7r")]
 health = 2
+
+[node name="MeleeAttackNode" parent="." instance=ExtResource("5_3tqy1")]
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeAttackNode"]
+position = Vector2(0, -8)
+shape = SubResource("CircleShape2D_lfjlf")
+debug_color = Color(0.7, 0, 0, 0.419608)
+
+[connection signal="on_damage_dealt" from="HitboxArea" to="HealthNode" method="on_hit"]

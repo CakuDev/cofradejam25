@@ -14,8 +14,9 @@ func _ready() -> void:
 
 func on_hit(damage: int):
 	_current_health -= damage
+	print(get_parent().name + " HIT: " + str(_current_health))
 	if _current_health <= 0:
-		print("DEATH")
+		get_parent().queue_free()
 		
 		
 func on_healed(heal: int):

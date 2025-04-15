@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://dntw0lyh8of6b"]
+[gd_scene load_steps=10 format=3 uid="uid://dntw0lyh8of6b"]
 
 [ext_resource type="Texture2D" uid="uid://bgcakcsepfhfr" path="res://assets/tilemap/atlas.tres" id="1_c3abi"]
 [ext_resource type="Script" uid="uid://ykuljco7qm5i" path="res://assets/characters/player/player.gd" id="1_prble"]
 [ext_resource type="PackedScene" uid="uid://h3s24tuxkulm" path="res://assets/behaviours/health_node/health_node.tscn" id="3_c1sar"]
 [ext_resource type="PackedScene" uid="uid://6u6rou0c3jfe" path="res://assets/behaviours/melee_attack_area/melee_attack_node.tscn" id="4_ju3fu"]
+[ext_resource type="PackedScene" uid="uid://dkgyv5thgjacn" path="res://assets/behaviours/hitbox_area/hitbox_area.tscn" id="5_g1agn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_prble"]
 atlas = ExtResource("1_c3abi")
@@ -14,6 +15,9 @@ size = Vector2(10, 14)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g1agn"]
 radius = 18.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uiske"]
+size = Vector2(9, 13)
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_prble")
@@ -34,3 +38,14 @@ health = 5
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeAttackNode"]
 position = Vector2(0, -8)
 shape = SubResource("CircleShape2D_g1agn")
+
+[node name="HitboxArea" parent="." instance=ExtResource("5_g1agn")]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxArea"]
+position = Vector2(0, -7)
+shape = SubResource("RectangleShape2D_uiske")
+debug_color = Color(0.7, 0, 0, 0.419608)
+
+[connection signal="on_damage_dealt" from="HitboxArea" to="HealthNode" method="on_hit"]
