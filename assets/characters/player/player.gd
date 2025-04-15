@@ -6,6 +6,8 @@ const SPEED = 100.0
 
 
 @onready var health_node: HealthNode = $HealthNode
+@onready var character_sprite: CharacterSprite = %CharacterSprite
+@onready var hitbox_area: HitboxArea = $HitboxArea
 
 
 @export var input_prefix: String
@@ -37,9 +39,10 @@ func _physics_process(_delta: float) -> void:
 	else:
 		velocity.y = move_toward(velocity.y, 0, SPEED)
 
+	character_sprite.is_moving = x_direction != 0. or y_direction != 0.
+	
 	move_and_slide()
 
 
 func hit(damage: int) -> void:
-	print(name + " DAMAGED")
-	health_node.on_hit(damage)
+	hitbox_area.hit(damage, 0, Vector2.ZERO)

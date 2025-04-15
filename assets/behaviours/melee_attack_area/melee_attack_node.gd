@@ -27,8 +27,9 @@ func _on_area_exited(area: Area2D) -> void:
 
 func attack():
 	if not _objectives.is_empty() and _can_attack:
-		print("ATTACKING")
-		_objectives[0].hit(damage_dealt, knockback_force)
+		var objective: HitboxArea = _objectives[0]
+		var knockback_direction: Vector2 = (objective.global_position - global_position).normalized()
+		objective.hit(damage_dealt, knockback_force, knockback_direction)
 		timer.start()
 		_can_attack = false
 
