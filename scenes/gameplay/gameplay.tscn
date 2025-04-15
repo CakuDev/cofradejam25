@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://bxo54r0bi2aey"]
+
+[ext_resource type="PackedScene" uid="uid://1y0un1mmfcx2" path="res://assets/scenario/scenario.tscn" id="1_elxb5"]
+[ext_resource type="PackedScene" uid="uid://dntw0lyh8of6b" path="res://assets/characters/player/player.tscn" id="2_x0t60"]
+
+[node name="Gameplay" type="Node2D"]
+
+[node name="Scenario" parent="." instance=ExtResource("1_elxb5")]
+
+[node name="LeftPlayer" parent="." instance=ExtResource("2_x0t60")]
+position = Vector2(227, 272)
+input_prefix = "lc"
+
+[node name="RightPlayer" parent="." instance=ExtResource("2_x0t60")]
+position = Vector2(692, 272)
+input_prefix = "rc"
