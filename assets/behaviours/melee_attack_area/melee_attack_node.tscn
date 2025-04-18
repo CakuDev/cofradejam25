@@ -8,6 +8,10 @@ collision_mask = 2
 script = ExtResource("1_p3gas")
 
 [node name="Timer" type="Timer" parent="."]
+wait_time = 0.8
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+bus = &"SFX"
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="area_exited" from="." to="." method="_on_area_exited"]

@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8iecqescu32s"]
+
+[ext_resource type="Texture2D" uid="uid://bvp3cex2i1ym4" path="res://assets/characters/player/attack.png" id="1_hkn54"]
+[ext_resource type="Script" uid="uid://dtajuq2vvnkl6" path="res://assets/objects/attack_sweep/attack_sweep.gd" id="2_inra4"]
+
+[node name="AttackSweep" type="Sprite2D"]
+z_index = 200
+texture = ExtResource("1_hkn54")
+hframes = 3
+script = ExtResource("2_inra4")

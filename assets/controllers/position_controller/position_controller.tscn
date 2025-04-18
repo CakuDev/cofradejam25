@@ -1,11 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://daf0k1n1k4sok"]
+[gd_scene load_steps=4 format=3 uid="uid://daf0k1n1k4sok"]
 
 [ext_resource type="Script" uid="uid://c0hqvqlf6x2yc" path="res://assets/controllers/position_controller/position_controller.gd" id="1_1rgxd"]
+[ext_resource type="AudioStream" uid="uid://dabjhm4orp0yk" path="res://assets/controllers/position_controller/charge_attack.ogg" id="2_ruvim"]
+[ext_resource type="AudioStream" uid="uid://bka6qpmhll7ns" path="res://assets/controllers/position_controller/attack.ogg" id="3_ukhoh"]
 
 [node name="PositionController" type="Node"]
 script = ExtResource("1_1rgxd")
 
 [node name="Timer" type="Timer" parent="."]
 unique_name_in_owner = true
+wait_time = 0.8
+one_shot = true
+
+[node name="ChargeAttackAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_ruvim")
+bus = &"SFX"
+
+[node name="AttackAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_ukhoh")
+bus = &"SFX"
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

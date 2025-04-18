@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://widyuyexmrd8"]
+[gd_scene load_steps=5 format=3 uid="uid://widyuyexmrd8"]
 
 [ext_resource type="Script" uid="uid://d04ywiy4s331v" path="res://assets/objects/coin/coin.gd" id="1_85myh"]
 [ext_resource type="Texture2D" uid="uid://cy2sqfn1f2ov8" path="res://assets/objects/coin/tile_0093.png" id="2_152ko"]
+[ext_resource type="AudioStream" uid="uid://cebmmlbakqvhu" path="res://assets/objects/coin/512216__mateusz_chenc__coins.mp3" id="3_152ko"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_mrruy"]
 radius = 8.06226
@@ -10,9 +11,14 @@ radius = 8.06226
 script = ExtResource("1_85myh")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 50
 texture = ExtResource("2_152ko")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_mrruy")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_152ko")
+bus = &"SFX"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

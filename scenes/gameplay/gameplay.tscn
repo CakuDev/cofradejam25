@@ -1,44 +1,99 @@
-[gd_scene load_steps=6 format=3 uid="uid://bxo54r0bi2aey"]
+[gd_scene load_steps=12 format=3 uid="uid://bxo54r0bi2aey"]
 
 [ext_resource type="PackedScene" uid="uid://1y0un1mmfcx2" path="res://assets/scenario/scenario.tscn" id="1_elxb5"]
 [ext_resource type="PackedScene" uid="uid://dntw0lyh8of6b" path="res://assets/characters/player/player.tscn" id="2_x0t60"]
 [ext_resource type="PackedScene" uid="uid://daf0k1n1k4sok" path="res://assets/controllers/position_controller/position_controller.tscn" id="3_2p25t"]
 [ext_resource type="PackedScene" uid="uid://byuiwxoirnb53" path="res://assets/controllers/enemy_spawner/enemy_spawner.tscn" id="4_m3hu3"]
 [ext_resource type="PackedScene" uid="uid://tshj3lnhkjke" path="res://assets/controllers/coin_spawner/coin_spawner.tscn" id="5_q64rj"]
+[ext_resource type="AudioStream" uid="uid://b17abb5rgkow1" path="res://scenes/gameplay/on_your_toes.ogg" id="6_0w2j2"]
+[ext_resource type="PackedScene" uid="uid://najouo1av8j8" path="res://assets/ui/hp/hp.tscn" id="7_gh441"]
+[ext_resource type="PackedScene" uid="uid://dv0b0y6f2ikov" path="res://assets/ui/pause_menu/pause_menu.tscn" id="8_pa1on"]
+[ext_resource type="PackedScene" uid="uid://0qqtiwkcdlbf" path="res://assets/controllers/coin_collector/coin_collector.tscn" id="9_elju3"]
+
+[sub_resource type="GDScript" id="GDScript_elju3"]
+script/source = "extends Control
+
+
+func _on_button_pressed() -> void:
+	get_tree().paused = false
+	SceneController.change_to_gameplay()
+
+
+func _on_button_2_pressed() -> void:
+	get_tree().paused = false
+	SceneController.change_to_main_menu()
+"
+
+[sub_resource type="GDScript" id="GDScript_lb4ud"]
+script/source = "extends Control
+
+@onready var pause_menu: Control = $\"../PauseMenu\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	get_tree().paused = true
+
+
+func _on_button_pressed() -> void:
+	get_tree().paused = false
+	pause_menu.can_pause = true
+	queue_free()
+"
 
 [node name="Gameplay" type="Node2D"]
 
 [node name="Scenario" parent="." instance=ExtResource("1_elxb5")]
 
-[node name="LeftPlayer" parent="." instance=ExtResource("2_x0t60")]
+[node name="LeftPlayer" parent="." node_paths=PackedStringArray("hp") instance=ExtResource("2_x0t60")]
 position = Vector2(103, 143)
 input_prefix = "lc"
+hp = NodePath("../LeftHP")
 
-[node name="RightPlayer" parent="." instance=ExtResource("2_x0t60")]
+[node name="RightPlayer" parent="." node_paths=PackedStringArray("hp") instance=ExtResource("2_x0t60")]
 position = Vector2(347, 152)
 input_prefix = "rc"
+hp = NodePath("../RightHP")
 
 [node name="PositionController" parent="." node_paths=PackedStringArray("left_player", "right_player") instance=ExtResource("3_2p25t")]
 left_player = NodePath("../LeftPlayer")
 right_player = NodePath("../RightPlayer")
 
-[node name="EnemySpawner" parent="." node_paths=PackedStringArray("player") instance=ExtResource("4_m3hu3")]
-position = Vector2(128, 145)
+[node name="LeftEnemySpawner" parent="." node_paths=PackedStringArray("player") instance=ExtResource("4_m3hu3")]
+position = Vector2(-28, 88)
 player = NodePath("../LeftPlayer")
 
-[node name="Node2D" type="Node2D" parent="EnemySpawner"]
-position = Vector2(-73, -68)
+[node name="Node2D" type="Node2D" parent="LeftEnemySpawner"]
+position = Vector2(87, -11)
 
-[node name="Node2D2" type="Node2D" parent="EnemySpawner"]
-position = Vector2(65, -68)
+[node name="Node2D2" type="Node2D" parent="LeftEnemySpawner"]
+position = Vector2(225, -11)
 
-[node name="Node2D3" type="Node2D" parent="EnemySpawner"]
-position = Vector2(65, 66)
+[node name="Node2D3" type="Node2D" parent="LeftEnemySpawner"]
+position = Vector2(225, 123)
 
-[node name="Node2D4" type="Node2D" parent="EnemySpawner"]
-position = Vector2(-73, 66)
+[node name="Node2D4" type="Node2D" parent="LeftEnemySpawner"]
+position = Vector2(87, 123)
 
-[node name="CoinSpawner" parent="." instance=ExtResource("5_q64rj")]
+[node name="RightEnemySpawner" parent="." node_paths=PackedStringArray("player") instance=ExtResource("4_m3hu3")]
+position = Vector2(-28, 88)
+player = NodePath("../RightPlayer")
+
+[node name="Node2D" type="Node2D" parent="RightEnemySpawner"]
+position = Vector2(312, -11)
+
+[node name="Node2D2" type="Node2D" parent="RightEnemySpawner"]
+position = Vector2(450, -11)
+
+[node name="Node2D3" type="Node2D" parent="RightEnemySpawner"]
+position = Vector2(450, 123)
+
+[node name="Node2D4" type="Node2D" parent="RightEnemySpawner"]
+position = Vector2(312, 123)
+
+[node name="CoinSpawner" parent="." node_paths=PackedStringArray("left_player", "right_player", "coin_collector") instance=ExtResource("5_q64rj")]
+left_player = NodePath("../LeftPlayer")
+right_player = NodePath("../RightPlayer")
+coin_collector = NodePath("../CoinCollector")
 
 [node name="Node2D" type="Node2D" parent="CoinSpawner"]
 position = Vector2(71, 77)
@@ -291,3 +346,131 @@ position = Vector2(384, 205)
 
 [node name="Node2D84" type="Node2D" parent="CoinSpawner"]
 position = Vector2(404, 205)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("6_0w2j2")
+volume_db = -5.0
+autoplay = true
+bus = &"Music"
+
+[node name="LeftHP" parent="." instance=ExtResource("7_gh441")]
+position = Vector2(224, 225)
+
+[node name="RightHP" parent="." instance=ExtResource("7_gh441")]
+position = Vector2(256, 225)
+
+[node name="CoinCollector" parent="." instance=ExtResource("9_elju3")]
+position = Vector2(228, 31)
+
+[node name="PauseMenu" parent="." instance=ExtResource("8_pa1on")]
+offset_right = 480.0
+offset_bottom = 270.0
+
+[node name="GameOver" type="Control" parent="."]
+process_mode = 3
+visible = false
+z_index = 1000
+custom_minimum_size = Vector2(480, 270)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 480.0
+offset_bottom = 270.0
+script = SubResource("GDScript_elju3")
+
+[node name="ColorRect" type="ColorRect" parent="GameOver"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05, 0.05, 0.05, 0.980392)
+
+[node name="CenterContainer" type="CenterContainer" parent="GameOver"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOver/CenterContainer"]
+process_mode = 3
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Label" type="Label" parent="GameOver/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "GAME OVER"
+
+[node name="Button" type="Button" parent="GameOver/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Retry"
+
+[node name="Button2" type="Button" parent="GameOver/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Exit"
+
+[node name="Control" type="Control" parent="."]
+process_mode = 3
+z_index = 1000
+custom_minimum_size = Vector2(480, 270)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = SubResource("GDScript_lb4ud")
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05, 0.05, 0.05, 0.980392)
+
+[node name="CenterContainer" type="CenterContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Label" type="Label" parent="Control/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(437.52, 0)
+layout_mode = 2
+text = "Two knights delve into the dungeon to get 20 coins to pay their duty to the town's priest..."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Label3" type="Label" parent="Control/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(437.52, 0)
+layout_mode = 2
+text = "But the dungeon has a curse: The knight in the left room has to be above the other knight. You shouldn't break this rule."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Label2" type="Label" parent="Control/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400.735, 0)
+layout_mode = 2
+text = "Move: Gamepad joysticks / WASD and arrow keys"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Button" type="Button" parent="Control/CenterContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Start your adventure"
+
+[connection signal="on_player_death" from="LeftPlayer" to="PauseMenu" method="disable_pause"]
+[connection signal="on_player_death" from="RightPlayer" to="PauseMenu" method="disable_pause"]
+[connection signal="pressed" from="GameOver/CenterContainer/VBoxContainer/Button" to="GameOver" method="_on_button_pressed"]
+[connection signal="pressed" from="GameOver/CenterContainer/VBoxContainer/Button2" to="GameOver" method="_on_button_2_pressed"]
+[connection signal="pressed" from="Control/CenterContainer/VBoxContainer/Button" to="Control" method="_on_button_pressed"]

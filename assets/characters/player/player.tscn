@@ -1,21 +1,28 @@
-[gd_scene load_steps=11 format=3 uid="uid://dntw0lyh8of6b"]
+[gd_scene load_steps=14 format=3 uid="uid://dntw0lyh8of6b"]
 
 [ext_resource type="Texture2D" uid="uid://bgcakcsepfhfr" path="res://assets/tilemap/atlas.tres" id="1_c3abi"]
 [ext_resource type="Script" uid="uid://ykuljco7qm5i" path="res://assets/characters/player/player.gd" id="1_prble"]
+[ext_resource type="Texture2D" uid="uid://i7gvpbgomtv8" path="res://assets/objects/line_particle/square.png" id="2_cv56s"]
 [ext_resource type="PackedScene" uid="uid://h3s24tuxkulm" path="res://assets/behaviours/health_node/health_node.tscn" id="3_c1sar"]
 [ext_resource type="PackedScene" uid="uid://6u6rou0c3jfe" path="res://assets/behaviours/melee_attack_area/melee_attack_node.tscn" id="4_ju3fu"]
 [ext_resource type="PackedScene" uid="uid://dkgyv5thgjacn" path="res://assets/behaviours/hitbox_area/hitbox_area.tscn" id="5_g1agn"]
 [ext_resource type="PackedScene" uid="uid://dgwnbihf5pvsc" path="res://assets/characters/character_sprite/character_sprite.tscn" id="5_uiske"]
+[ext_resource type="AudioStream" uid="uid://dewnnnvn8eddk" path="res://assets/characters/player/attack_swoosh.ogg" id="6_1ppuv"]
+
+[sub_resource type="Curve" id="Curve_bc6xu"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.823529, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -18.0029, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_prble"]
 atlas = ExtResource("1_c3abi")
 region = Rect2(16, 128, 16, 16)
+filter_clip = true
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c1sar"]
 size = Vector2(10, 14)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g1agn"]
-radius = 18.0
+radius = 20.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uiske"]
 size = Vector2(9, 13)
@@ -23,8 +30,30 @@ size = Vector2(9, 13)
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_prble")
 
+[node name="GPUParticles2D" type="CPUParticles2D" parent="."]
+modulate = Color(0.537255, 0.8, 0.866667, 1)
+z_index = 50
+z_as_relative = false
+position = Vector2(0, -7)
+amount = 12
+texture = ExtResource("2_cv56s")
+lifetime = 2.0
+preprocess = 2.0
+randomness = 1.0
+local_coords = true
+emission_shape = 3
+emission_rect_extents = Vector2(1, 4)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 40.0
+initial_velocity_max = 45.0
+scale_amount_min = 0.5
+scale_amount_max = 1.5
+scale_amount_curve = SubResource("Curve_bc6xu")
+
 [node name="CharacterSprite" parent="." instance=ExtResource("5_uiske")]
 unique_name_in_owner = true
+z_index = 100
 texture = SubResource("AtlasTexture_prble")
 offset = Vector2(0, -8)
 
@@ -37,6 +66,7 @@ health = 5
 
 [node name="MeleeAttackNode" parent="." instance=ExtResource("4_ju3fu")]
 knockback_force = 5.0
+attack_sfx = ExtResource("6_1ppuv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeAttackNode"]
 position = Vector2(0, -8)
@@ -51,5 +81,6 @@ position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_uiske")
 debug_color = Color(0.7, 0, 0, 0.419608)
 
+[connection signal="on_hp_changed" from="HealthNode" to="." method="on_death"]
 [connection signal="on_damage_dealt" from="HitboxArea" to="CharacterSprite" method="on_damage_dealt"]
 [connection signal="on_damage_dealt" from="HitboxArea" to="HealthNode" method="on_hit"]

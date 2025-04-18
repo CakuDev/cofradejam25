@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://rwgm47b31kuf"]
+[gd_scene load_steps=15 format=3 uid="uid://rwgm47b31kuf"]
 
 [ext_resource type="Script" uid="uid://dvhudor4ahpme" path="res://assets/characters/enemies/bat/bat.gd" id="1_lfjlf"]
 [ext_resource type="Texture2D" uid="uid://bgcakcsepfhfr" path="res://assets/tilemap/atlas.tres" id="1_u7nro"]
@@ -7,11 +7,14 @@
 [ext_resource type="PackedScene" uid="uid://dgwnbihf5pvsc" path="res://assets/characters/character_sprite/character_sprite.tscn" id="2_m205a"]
 [ext_resource type="PackedScene" uid="uid://h3s24tuxkulm" path="res://assets/behaviours/health_node/health_node.tscn" id="3_7jq7r"]
 [ext_resource type="PackedScene" uid="uid://6u6rou0c3jfe" path="res://assets/behaviours/melee_attack_area/melee_attack_node.tscn" id="5_3tqy1"]
+[ext_resource type="AudioStream" uid="uid://ce7amwfjm0b0n" path="res://assets/characters/enemies/bat/attack.ogg" id="6_sa2og"]
 [ext_resource type="PackedScene" uid="uid://cgi5nrpbma11k" path="res://assets/behaviours/knockback_node/knockback_node.tscn" id="7_4exir"]
+[ext_resource type="AudioStream" uid="uid://b1r8wbqjy5su8" path="res://assets/characters/enemies/bat/flying.ogg" id="9_t18sq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_875rm"]
 atlas = ExtResource("1_u7nro")
 region = Rect2(0, 160, 16, 16)
+filter_clip = true
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7jq7r"]
 radius = 5.0
@@ -23,10 +26,13 @@ radius = 8.0
 radius = 6.0
 
 [node name="Bat" type="CharacterBody2D"]
+z_index = 100
 collision_layer = 3
 script = ExtResource("1_lfjlf")
 
 [node name="CharacterSprite" parent="." instance=ExtResource("2_m205a")]
+z_index = 90
+z_as_relative = false
 texture = SubResource("AtlasTexture_875rm")
 offset = Vector2(0, -8)
 
@@ -46,6 +52,7 @@ debug_color = Color(0.7, 0, 0, 0.419608)
 [node name="MeleeAttackNode" parent="." instance=ExtResource("5_3tqy1")]
 collision_mask = 4
 knockback_force = 3.0
+attack_sfx = ExtResource("6_sa2og")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeAttackNode"]
 position = Vector2(0, -8)
@@ -58,6 +65,11 @@ debug_color = Color(0.7, 0, 0, 0.419608)
 health = 2
 
 [node name="KnockbackNode" parent="." instance=ExtResource("7_4exir")]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_t18sq")
+autoplay = true
+bus = &"SFX"
 
 [connection signal="on_player_set" from="." to="FollowNode" method="update_node_to_follow"]
 [connection signal="on_damage_dealt" from="HitboxArea" to="CharacterSprite" method="on_damage_dealt"]
